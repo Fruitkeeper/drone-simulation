@@ -157,13 +157,4 @@
     <axis xyz="0 0 1"/>
   </joint>
   
-  <!-- Gazebo Plugins -->
-  <gazebo>
-    <plugin name="multirotor_base_plugin" filename="libgazebo_multirotor_base_plugin.so">
-      <robotNamespace></robotNamespace>
-      <linkName>base_link</linkName>
-      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
-    </plugin>
-  </gazebo>
-  
 </robot>

@@ -16,6 +16,7 @@ def generate_launch_description():
     x_pos = LaunchConfiguration('x', default='0.0')
     y_pos = LaunchConfiguration('y', default='0.0')
     z_pos = LaunchConfiguration('z', default='0.5')
+    headless = LaunchConfiguration('headless', default='true')
     
     # Path to URDF file
     urdf_file = os.path.join(pkg_share, 'urdf', 'crazyflie.urdf')
@@ -39,7 +40,13 @@ def generate_launch_description():
         description='Z position of the Crazyflie'
     )
     
-    # Start Gazebo server
+    declare_headless_cmd = DeclareLaunchArgument(
+        'headless',
+        default_value='true',
+        description='Run Gazebo in headless mode (server only)'
+    )
+    
+    # Start Gazebo server (headless mode)
     start_gazebo_server_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
@@ -49,7 +56,8 @@ def generate_launch_description():
             ])
         ]),
         launch_arguments={
-            'gz_args': '-r empty.sdf'
+            'gz_args': ['-r -s empty.sdf'],
+            'headless': headless
         }.items()
     )
     
@@ -74,6 +82,7 @@ def generate_launch_description():
     ld.add_action(declare_x_cmd)
     ld.add_action(declare_y_cmd)
     ld.add_action(declare_z_cmd)
+    ld.add_action(declare_headless_cmd)
     
     # Add the actions to launch Gazebo and spawn the drone
     ld.add_action(start_gazebo_server_cmd)
