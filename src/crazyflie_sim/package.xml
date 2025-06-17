@@ -4,7 +4,7 @@
   <name>crazyflie_sim</name>
   <version>0.0.0</version>
   <description>Crazyflie simulation package for Gazebo</description>
-  <maintainer email="user@example.com">user</maintainer>
+  <maintainer email="lgomezacebo.ieu2022@estudent.ie.edu">user</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

@@ -2,10 +2,14 @@ services:
   cf_sim:
     build: .
     container_name: crazyflie_sim
+    env_file:
+      - .env
     environment:
-      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ./src:/root/ros2_ws/src
     network_mode: "host"
+    stdin_open: true
+    tty: true
   

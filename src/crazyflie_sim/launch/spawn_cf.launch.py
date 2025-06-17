@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -16,7 +16,8 @@ def generate_launch_description():
     x_pos = LaunchConfiguration('x', default='0.0')
     y_pos = LaunchConfiguration('y', default='0.0')
     z_pos = LaunchConfiguration('z', default='0.5')
-    headless = LaunchConfiguration('headless', default='true')
+    headless = LaunchConfiguration('headless', default='false')
+    gui = LaunchConfiguration('gui', default='true')
     
     # Path to URDF file
     urdf_file = os.path.join(pkg_share, 'urdf', 'crazyflie.urdf')
@@ -42,12 +43,34 @@ def generate_launch_description():
     
     declare_headless_cmd = DeclareLaunchArgument(
         'headless',
-        default_value='true',
+        default_value='false',
         description='Run Gazebo in headless mode (server only)'
     )
     
-    # Start Gazebo server (headless mode)
-    start_gazebo_server_cmd = IncludeLaunchDescription(
+    declare_gui_cmd = DeclareLaunchArgument(
+        'gui',
+        default_value='true',
+        description='Launch Gazebo GUI'
+    )
+    
+    # Start Gazebo with GUI
+    start_gazebo_gui_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([
+                FindPackageShare('ros_gz_sim'),
+                'launch',
+                'gz_sim.launch.py'
+            ])
+        ]),
+        launch_arguments={
+            'gz_args': ['-r empty.sdf'],
+            'gui': gui
+        }.items(),
+        condition=UnlessCondition(headless)
+    )
+    
+    # Start Gazebo headless (server only)
+    start_gazebo_headless_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
             PathJoinSubstitution([
                 FindPackageShare('ros_gz_sim'),
@@ -57,8 +80,9 @@ def generate_launch_description():
         ]),
         launch_arguments={
             'gz_args': ['-r -s empty.sdf'],
-            'headless': headless
-        }.items()
+            'gui': 'false'
+        }.items(),
+        condition=IfCondition(headless)
     )
     
     # Spawn Crazyflie
@@ -83,9 +107,11 @@ def generate_launch_description():
     ld.add_action(declare_y_cmd)
     ld.add_action(declare_z_cmd)
     ld.add_action(declare_headless_cmd)
+    ld.add_action(declare_gui_cmd)
     
     # Add the actions to launch Gazebo and spawn the drone
-    ld.add_action(start_gazebo_server_cmd)
+    ld.add_action(start_gazebo_gui_cmd)
+    ld.add_action(start_gazebo_headless_cmd)
     ld.add_action(spawn_crazyflie_cmd)
     
     return ld 
