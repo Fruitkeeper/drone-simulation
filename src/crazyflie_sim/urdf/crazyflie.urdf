@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<robot name="crazyflie">
+  
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.092 0.092 0.029"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.2 0.2 0.8 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.092 0.092 0.029"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.027"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+  
+  <!-- Propeller Links -->
+  <link name="propeller_1">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.2 0.2 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  
+  <link name="propeller_2">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.2 0.2 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  
+  <link name="propeller_3">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.2 0.2 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  
+  <link name="propeller_4">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.2 0.2 1"/>
+      </material>
+    </visual>
+    
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.005"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+  
+  <!-- Joints -->
+  <joint name="propeller_1_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="propeller_1"/>
+    <origin xyz="0.05 0.05 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <joint name="propeller_2_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="propeller_2"/>
+    <origin xyz="-0.05 0.05 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <joint name="propeller_3_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="propeller_3"/>
+    <origin xyz="-0.05 -0.05 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <joint name="propeller_4_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="propeller_4"/>
+    <origin xyz="0.05 -0.05 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+  <!-- Gazebo Plugins -->
+  <gazebo>
+    <plugin name="multirotor_base_plugin" filename="libgazebo_multirotor_base_plugin.so">
+      <robotNamespace></robotNamespace>
+      <linkName>base_link</linkName>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+    </plugin>
+  </gazebo>
+  
+</robot>
