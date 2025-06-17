@@ -1,0 +1,12 @@
+version: "3"
+services:
+  cf_sim:
+    build: .
+    container_name: crazyflie_sim
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./src:/root/ros2_ws/src
+    network_mode: "host"
+  
