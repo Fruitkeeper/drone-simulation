@@ -14,6 +14,16 @@ RUN apt update && apt install -y \
 RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 
+# Install VNC and desktop environment
+RUN apt update && apt install -y \
+    xfce4 \
+    xfce4-goodies \
+    tightvncserver \
+    novnc \
+    websockify \
+    supervisor \
+    && apt clean
+
 # Update packages and install Gazebo Garden and ROS 2 packages
 RUN apt update && apt install -y \
     gz-garden \
@@ -22,8 +32,20 @@ RUN apt update && apt install -y \
     ros-humble-xacro \
     python3-colcon-common-extensions \
     build-essential \
-    x11-apps \
     && apt clean
+
+# Set up VNC
+RUN mkdir /root/.vnc
+RUN echo "crazyflie" | vncpasswd -f > /root/.vnc/passwd
+RUN chmod 600 /root/.vnc/passwd
+
+# Create xstartup file for VNC
+RUN echo '#!/bin/bash\nxrdb $HOME/.Xresources\nstartxfce4 &' > /root/.vnc/xstartup
+RUN chmod +x /root/.vnc/xstartup
+
+# Set up supervisor configuration
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Set up ROS 2 workspace
 RUN mkdir -p /root/ros2_ws/src
@@ -32,5 +54,10 @@ WORKDIR /root/ros2_ws
 COPY ./src ./src
 RUN . /opt/ros/humble/setup.sh && colcon build
 
-ENV DISPLAY=:0
-CMD ["bash"]
+# Expose VNC and noVNC ports
+EXPOSE 5901 6080
+
+# Set display
+ENV DISPLAY=:1
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
