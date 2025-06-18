@@ -14,13 +14,15 @@ RUN apt update && apt install -y \
 RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
 
-# Install VNC and desktop environment
+# Install VNC and desktop environment with correct package names
 RUN apt update && apt install -y \
     xfce4 \
     xfce4-goodies \
-    tightvncserver \
+    tigervnc-standalone-server \
+    tigervnc-common \
+    tigervnc-xorg-extension \
     novnc \
-    websockify \
+    python3-websockify \
     supervisor \
     && apt clean
 
@@ -35,7 +37,7 @@ RUN apt update && apt install -y \
     && apt clean
 
 # Set up VNC
-RUN mkdir /root/.vnc
+RUN mkdir -p /root/.vnc
 RUN echo "crazyflie" | vncpasswd -f > /root/.vnc/passwd
 RUN chmod 600 /root/.vnc/passwd
 
